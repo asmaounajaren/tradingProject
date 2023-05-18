@@ -2,9 +2,135 @@
 {% block title %}
 Home page
 {% endblock %}
-
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static', filename='css/multisteps.css')}}">
+{% endblock %}
 {% block body %}
   <section class="home-section">
     <div class="text">Dashboard index</div>
+    <div class="content">
+      <div class="content__inner">
+{#        <div class="container">#}
+{#          <h2 class="content__title content__title--m-sm">Choose Animation Type</h2>#}
+{#          <form class="pick-animation my-4">#}
+{#            <div class="form-row">#}
+{#              <div class="col-5 m-auto">#}
+{#                <select class="pick-animation__select form-control">#}
+{#                  <option value="scaleIn" selected="selected">ScaleIn</option>#}
+{#                  <option value="scaleOut">ScaleOut</option>#}
+{#                  <option value="slideHorz">SlideHorz</option>#}
+{#                  <option value="slideVert">SlideVert</option>#}
+{#                  <option value="fadeIn">FadeIn</option>#}
+{#                </select>#}
+{#              </div>#}
+{#            </div>#}
+{#          </form>#}
+{##}
+{#          <h2 class="content__title">Click on steps or 'Prev' and 'Next' buttons</h2>#}
+{#        </div>#}
+        <div class="container overflow-hidden">
+          <div class="multisteps-form">
+            <div class="row">
+              <div class="col-12 col-lg-8 ml-auto mr-auto mb-4">
+                <div class="multisteps-form__progress">
+                  <button class="multisteps-form__progress-btn js-active" type="button" title="User Info">Step 1</button>
+                  <button class="multisteps-form__progress-btn" type="button" title="Address">Step 2</button>
+                  <button class="multisteps-form__progress-btn" type="button" title="Message">Step 3</button>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 col-lg-8 m-auto">
+                <form class="multisteps-form__form">
+                  <div class="multisteps-form__panel shadow p-4 rounded bg-white js-active" data-animation="scaleIn">
+                    <h3 class="multisteps-form__title">Your User Info</h3>
+                    <div class="multisteps-form__content">
+                      <div class="form-row mt-4">
+                        <div class="col-12 col-sm-6 mt-4 mt-sm-0">
+                            <select class="form-control">
+                              <option value="">-- Select --</option>
+                              <option value="option1">Option 1</option>
+                              <option value="option2">Option 2</option>
+                              <option value="option3">Option 3</option>
+                              <!-- Add more options as needed -->
+                            </select>
+                        </div>
+                      </div>
+                      <div class="form-row mt-4">
+{#                        <div class="col-12 col-sm-6">#}
+{#                          <input class="multisteps-form__input form-control" type="text" placeholder="Login"/>#}
+{#                        </div>#}
+{#                        <div class="col-12 col-sm-6 mt-4 mt-sm-0">#}
+{#                          <input class="multisteps-form__input form-control" type="email" placeholder="Email"/>#}
+{#                        </div>#}
+                      </div>
+                      <div class="form-row mt-4">
+{#                        <div class="col-12 col-sm-6">#}
+{#                          <input class="multisteps-form__input form-control" type="password" placeholder="Password"/>#}
+{#                        </div>#}
+{#                        <div class="col-12 col-sm-6 mt-4 mt-sm-0">#}
+{#                          <input class="multisteps-form__input form-control" type="password" placeholder="Repeat Password"/>#}
+{#                        </div>#}
+{#                      </div>#}
+{#                      <div class="button-row d-flex mt-4">#}
+{#                        <button class="btn btn-primary ml-auto js-btn-next" type="button" title="Next">Next</button>#}
+{#                      </div>#}
+                    </div>
+                  </div>
+
+                  <div class="multisteps-form__panel shadow p-4 rounded bg-white" data-animation="scaleIn">
+                    <h3 class="multisteps-form__title">Your Address</h3>
+                    <div class="multisteps-form__content">
+                      <div class="form-row mt-4">
+                        <div class="col">
+                          <input class="multisteps-form__input form-control" type="text" placeholder="Address 1"/>
+                        </div>
+                      </div>
+                      <div class="form-row mt-4">
+                        <div class="col">
+                          <input class="multisteps-form__input form-control" type="text" placeholder="Address 2"/>
+                        </div>
+                      </div>
+                      <div class="form-row mt-4">
+                        <div class="col-12 col-sm-6">
+                          <input class="multisteps-form__input form-control" type="text" placeholder="City"/>
+                        </div>
+                        <div class="col-6 col-sm-3 mt-4 mt-sm-0">
+                          <select class="multisteps-form__select form-control">
+                            <option selected="selected">State...</option>
+                            <option>...</option>
+                          </select>
+                        </div>
+                        <div class="col-6 col-sm-3 mt-4 mt-sm-0">
+                          <input class="multisteps-form__input form-control" type="text" placeholder="Zip"/>
+                        </div>
+                      </div>
+                      <div class="button-row d-flex mt-4">
+                        <button class="btn btn-primary js-btn-prev" type="button" title="Prev">Prev</button>
+                        <button class="btn btn-primary ml-auto js-btn-next" type="button" title="Next">Next</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="multisteps-form__panel shadow p-4 rounded bg-white" data-animation="scaleIn">
+                    <h3 class="multisteps-form__title">Additional Message</h3>
+                    <div class="multisteps-form__content">
+                      <div class="form-row mt-4">
+                        <textarea class="multisteps-form__textarea form-control" placeholder="Additional Message and Questions"></textarea>
+                      </div>
+                      <div class="button-row d-flex mt-4">
+                        <button class="btn btn-primary js-btn-prev" type="button" title="Prev">Prev</button>
+{#                        <button class="btn btn-success ml-auto" type="submit" title="Send">Send</button>#}
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
+  <script  src="../static/js/function.js"></script>
 {% endblock %}
