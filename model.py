@@ -112,7 +112,7 @@ def visualize_clusters(sector):
     ax.grid(True, linestyle='--', linewidth=0.5)
     ax.legend(fontsize=14)
     # plt.show()
-    image_file = 'cluster_plot.png'
+    image_file = 'static/img/cluster_plot.png'
     fig.savefig(image_file)
 
     # Return the image file path
@@ -172,8 +172,75 @@ the use of function 4
 """
 
 # save_clusters_to_csv(sector)
+"""STEP 2 : Advanced Trading Analysis and Simulation Toolkit - Z-score and Trade History"""
+
+#CA VA APPARAITRE GRIS
+sectors = [
+    'Communication_Services',
+    'Energy',
+    'financials',
+    'Health_Care',
+    'Industrials',
+    'Information_Technology',
+    'Real_Estate'
+]
 
 
+#CA VA APPARAITRE POUR CHOISIR UNE CLUSTER (LE TYPE DOIT ETRE INT BCZ THE FUNCTION analyze_cluster_pairs INPUT IS INT)
+cluster_num = [
+    1,
+    2,
+    3,
+    4
+]
 
 
+#CA VA APPARAITRE POUR CHOISIR VALEUR DE SIGNIFANCE LEVEL OF COINTEGRATION AND MEAN REVERSION (c'est mieux quil soit une valeur num au lieu de ces deux choix)
+significance_level_coint = [
+    0.05,
+    0.1
+]
+significance_level_mean_revert= [
+    0.05,
+    0.1
+]
+
+
+#functions predefined here in order to use them in the following functions
+
+def is_cointegrated(df, stock1, stock2, significance_level=0.1):
+    # Filter rows with missing or infinite values for the two stocks
+    filtered_df = df[[stock1, stock2]].dropna()
+    y = filtered_df[stock1]
+    x = filtered_df[stock2]
+    x = sm.add_constant(x)
+    model = sm.OLS(y, x).fit()
+    residuals = model.resid
+    adf_result = ts.adfuller(residuals)
+    p_value = adf_result[1]
+    return p_value < significance_level
+
+def calculate_correlation(df, stock1, stock2):
+    return df[[stock1, stock2]].pct_change().corr().iloc[0, 1]
+
+def calculate_residuals(df, stock1, stock2):
+    y = df[stock1].dropna()
+    x = df[stock2].dropna()
+    common_index = y.index.intersection(x.index)  # Ensure we only use rows where both x and y are not NaN
+    y = y.loc[common_index]
+    x = x.loc[common_index]
+    x = sm.add_constant(x)
+    model = sm.OLS(y, x).fit()
+    residuals = model.resid
+    return residuals
+
+def is_mean_reverting(residuals, significance_level=0.1):
+    adf_result = ts.adfuller(residuals, maxlag=0)
+    p_value = adf_result[1]
+    return p_value < significance_level
+
+def calculate_z_score_spread(df, stock1, stock2):
+    spread = df[stock1] - df[stock2]
+    z_score_spread = (spread - spread.mean()) / spread.std()
+    return z_score_spread
 

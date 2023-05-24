@@ -60,18 +60,15 @@ Home page
                                   {% endif %}
                               </table>
                           <br>
-                          <img src="../pic.png" alt="Cluster Plot">
-                        </div>
+                       </div>
                         <div class="form-row mt-4">
-                            <h4>K-Means</h4>
-                            <img src="../pic.png">
                       </div>
                       <div class="button-row d-flex mt-4">
                         <button class="btn btn-primary ml-auto js-btn-next" type="button" title="Next">Next</button>
                       </div>
                     </div>
                   </div>
-                                    <div class="multisteps-form__panel shadow p-4 rounded bg-white" data-animation="scaleIn">
+                    <div class="multisteps-form__panel shadow p-4 rounded bg-white" data-animation="scaleIn">
                     <h3 class="multisteps-form__title">Your Address</h3>
                     <div class="multisteps-form__content">
                       <div class="form-row mt-4">
@@ -97,9 +94,6 @@ Home page
                         <div class="col-6 col-sm-3 mt-4 mt-sm-0">
                           <input class="multisteps-form__input form-control" type="text" placeholder="Zip"/>
                         </div>
-                          <div class="col-6 col-sm-3 mt-4 mt-sm-0">
-                              <img src="../pic.png">
-                          </div>
                       </div>
                       <div class="button-row d-flex mt-4">
                         <button class="btn btn-primary js-btn-prev" type="button" title="Prev">Prev</button>
@@ -115,7 +109,6 @@ Home page
                       </div>
                       <div class="button-row d-flex mt-4">
                         <button class="btn btn-primary js-btn-prev" type="button" title="Prev">Prev</button>
-{#                        <button class="btn btn-success ml-auto" type="submit" title="Send">Send</button>#}
                       </div>
                     </div>
                   </div>
@@ -157,7 +150,7 @@ Home page
         });
     }
 
-            function updateTable(clusters) {
+            function updateTable(clusters, imageName) {
                 var tableBody = $('#cluster-table tbody');
                 tableBody.empty();
 
@@ -169,6 +162,15 @@ Home page
                     row.append($('<td>').text(stocks.join(', ')));
                     tableBody.append(row);
                 }
+
+                // Add image reload logic
+                  var imageContainer = $('#image-container');
+                  imageContainer.empty();
+
+                  // Create and append the image element
+                  var image = $('<img>');
+                  image.attr('src', '/static/img/' + imageName);
+                  imageContainer.append(image);
             }
     </script>
         <script  src="../static/js/function.js"></script>
