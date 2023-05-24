@@ -25,7 +25,6 @@ def index():
     if request.method == 'POST':
         selected_sector = request.form.get('sector')
         clusters = cluster_stocks(selected_sector)
-
         return jsonify(clusters)
     else:
         selected_sector = 'Energy'

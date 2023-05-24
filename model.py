@@ -155,7 +155,7 @@ price_data = load_sector_data(sector)[1]
 the use of function 2
 """
 # Run the clustering process for the 'Energy' sector
-cluster_stocks(sector)
+# cluster_stocks(sector)
 
 
 
@@ -163,7 +163,7 @@ cluster_stocks(sector)
 the use of function 3
 """
 
-visualize_clusters(sector)
+# visualize_clusters(sector)
 
 
 
@@ -171,7 +171,7 @@ visualize_clusters(sector)
 the use of function 4
 """
 
-save_clusters_to_csv(sector)
+# save_clusters_to_csv(sector)
 
 
 
