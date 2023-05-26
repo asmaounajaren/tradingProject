@@ -86,10 +86,10 @@ Home page
                             </form>
                         </div>
                         <div class="col-3 col-sm-3 mt-4 mt-sm-0">
-                          <input id="level-coint" class="multisteps-form__input form-control"  type='number' step='0.01' value='0.00' placeholder='0.00' oninput="validateInput(event)"/>
+                          <input id="level-coint" class="multisteps-form__input form-control"  type='number' step='0.1' value='0.1' placeholder='0.0' />
                         </div>
                         <div class="col-3 col-sm-3 mt-4 mt-sm-0">
-                          <input id="mean-revert" class="multisteps-form__input form-control"  type='number' step='0.01' value='0.00' placeholder='0.00' oninput="validateInput(event)"/>
+                          <input id="mean-revert" class="multisteps-form__input form-control"  type='number' step='0.1' value='0.1' placeholder='0.0' />
                         </div>
                           <div class="col-3 col-sm-3 mt-4 mt-sm-0">
                               <button id="btn-exec" class="btn btn-info" type='submit' placeholder=''>Execute</button>
@@ -198,27 +198,37 @@ Home page
                     tableBody.append(row);
                 }
             }
-            function validateInput(event) {
-                const input = event.target;
-                if (input.value < 0) {
-                  input.value = 0;
-                }
-            }
+            {#function validateInput(event) {#}
+            {#    const input = event.target;#}
+            {#    if (input.value < 0) {#}
+            {#      input.value = 0;#}
+            {#    }#}
+            {#}#}
 
-            $(document).ready(function () {
+                $(document).ready(function () {
     $('#btn-exec').click(function () {
         var sector = selectedSector;  // field with ID 'sector' to capture the sector value
         console.log(sector)
+        var cluster = $('#cluster-dropdown').val(); // Selected cluster from the dropdown
+        var levelCoint = $('#level-coint').val(); // Value of level-coint input
+        var meanRevert = $('#mean-revert').val(); // Value of mean-revert input
+
         $.ajax({
             type: 'POST',
             url: '/',
-            data: {sector: sector},
+            data: {sector: sector,
+                cluster: cluster,
+                levelCoint: levelCoint,
+                meanRevert: meanRevert
+            },
             success: function (response) {
                 var pairOptions = response.options;
                 console.log("paiiiiiiiiiiiiiiiiiiiiiiiiiiiiirs")
                 console.log(pairOptions)
                 // Clear existing options
                 $('#pair-select').empty();
+                console.log('clevel------->', levelCoint)
+                console.log('mRevert------->', meanRevert)
 
                 // Iterate over each list in the dictionary
                 for (var key in pairOptions) {

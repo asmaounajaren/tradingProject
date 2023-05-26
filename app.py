@@ -27,9 +27,21 @@ def index():
         selected_sector = request.form.get('sector')
         clusters = cluster_stocks(selected_sector)
         plot_img=visualize_clusters(selected_sector)
-        pair_options = analyze_cluster_pairs(selected_sector, 1, 0.1, 0.1)
-        print("ALl pairs")
-        print(pair_options)
+        selected_cluster = request.form.get('cluster')
+        level_coint = request.form.get('levelCoint')  # Retrieve level_coint value
+        mean_revert = request.form.get('meanRevert')  # Retrieve mean_revert value
+
+        # Convert the retrieved values to float if needed
+        level_coint = float(level_coint) if level_coint else None
+        mean_revert = float(mean_revert) if mean_revert else None
+
+        # Use the retrieved values in your logic
+        if level_coint is None and mean_revert is None and selected_cluster is None:
+            pair_options = analyze_cluster_pairs(selected_sector, 1, 0.1, 0.1)
+            print("All pairs")
+            print(pair_options)
+        else:
+            pair_options = analyze_cluster_pairs(selected_sector, selected_cluster, level_coint, mean_revert)
 
         response = {
             'clusters': clusters,
