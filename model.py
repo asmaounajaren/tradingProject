@@ -374,7 +374,10 @@ def plot_and_simulate_trading(pair, sector, cluster_num, upper_threshold=1, lowe
     plt.grid()
 
     # Save the figure
-    plt.savefig(title.replace(' ', '_') + '.png')
+    image_buffer = io.BytesIO()
+    plt.savefig(image_buffer, format='png')
+    image_buffer.seek(0)
+    image_base64 = base64.b64encode(image_buffer.getvalue()).decode()
 
     # Simulate trading
     cash = initial_cash
@@ -395,5 +398,5 @@ def plot_and_simulate_trading(pair, sector, cluster_num, upper_threshold=1, lowe
             trades.append({'Date': date, 'Action': 'Sell', 'Price': price, 'Cash': cash})
 
     trades_df = pd.DataFrame(trades)
-    return trades_df
+    return trades_df,image_base64
 

@@ -29,12 +29,6 @@ def index():
         print(selected_sector)
         clusters = cluster_stocks(selected_sector)
         plot_img = visualize_clusters(selected_sector)
-
-        # if selected_pair is None or selected_sector is None or selected_cluster is None:
-        # trade_history= plot_and_simulate_trading(pair_options[0], 'Industrials',1)
-        # else:
-        #     trade_history=plot_and_simulate_trading(pair_options[0], selected_sector,selected_cluster,1,-1,10000)
-
         response = {
             'clusters': clusters,
             'plot_img': plot_img,
@@ -83,17 +77,24 @@ def selectedPair():
         print("cluster")
         print("cluser numero: ",clusterNum )
         print("secteur: ",selectedSector)
-        trade = plot_and_simulate_trading(pairs, selectedSector, clusterNum,1,-1,10000)
+        trade,zscore_image = plot_and_simulate_trading(pairs, selectedSector, clusterNum,1,-1,10000)
         print("before")
         trade_history = trade.to_html()
         print(trade_history)
+        # zscore_image='/Z-score_Spread_and_Trading_Signals_for_'+pairs[0]+'_and_'+pairs[1]+'_in_'+selectedSector+'_Sector,_Cluster_'+clusterNum+'.png';
         response ={
-            'trade_history': trade_history
+            'trade_history': trade_history,
+            'zscore_image': zscore_image
         }
         return jsonify(response)
 
     else:
         return render_template('index.html')
+
+@app.route("/statistics", methods=['GET','POST'])
+def statistics():
+    if request.method == 'POST':
+        return jsonify()
 @app.route("/optimisation")
 def about_page():
     return render_template("optimisation.html")

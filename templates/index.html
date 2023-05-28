@@ -131,6 +131,11 @@
                                             </div>
                                              <div id="trade_history" class="form-row mt-4">
                                             </div>
+                                            <div id="plot_container" class="form-row mt-4">
+                                                <img id="zscore-image" src="" alt="zscore"
+                                                     style="height: 50%;width: 100%">
+                                            </div>
+
                                             <div class="button-row d-flex mt-4">
                                                 <button class="btn btn-primary js-btn-prev" type="button" title="Prev">
                                                     Prev
@@ -205,6 +210,7 @@
                 $('#plot-image').attr('src', 'data:image/png;base64,' + plotImg);
             }
 
+
             function updateTable(clusters) {
                 var tableBody = $('#cluster-table tbody');
                 tableBody.empty();
@@ -226,6 +232,10 @@
                 }
             }
 
+            function updateImageZscore(zscoreImg) {
+                // Update the image source dynamically
+                $('#zscore-image').attr('src', 'data:image/png;base64,' + zscoreImg);
+            }
             $(document).ready(function () {
 
                 $('#pair-select').change(function () {
@@ -245,8 +255,13 @@
                         success: function (response) {
                             console.log('Value sent to app.py');
                             var trade_history = response.trade_history;
+                            var zscore_image=response.zscore_image;
                             console.log(trade_history)
+                            console.log("Imaage ZScore")
+                            console.log(zscore_image)
                             document.getElementById("trade_history").innerHTML=trade_history ;
+                            updateImageZscore(response.zscore_image)
+
                             // Display the trade history
                             {#var tradeHistoryHtml = '<h2>Trade History</h2>';#}
                             {#tradeHistoryHtml += '<table>';#}
