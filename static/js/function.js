@@ -150,11 +150,4 @@ const setAnimationType = newType => {
   });
 };
 
-//changing animation
-const animationSelect = document.querySelector('.pick-animation__select');
 
-animationSelect.addEventListener('change', () => {
-  const newAnimationType = animationSelect.value;
-
-  setAnimationType(newAnimationType);
-});

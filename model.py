@@ -322,7 +322,6 @@ def analyze_cluster_pairs(sector, cluster_num, significance_level_coint=0.1, sig
 
 
 # function 2:  le PLOT de zscore and the thresholds of the chosen pairs in the previous function(the pair argument will be the  analyze_cluster_pairs(sector, 2)[0]) + trade history dataframe
-
 def plot_and_simulate_trading(pair, sector, cluster_num, upper_threshold=1, lower_threshold=-1, initial_cash=10000):
     """
     Function to plot trading signals for a given pair of stocks and simulate trading based on the signals.
@@ -346,6 +345,8 @@ def plot_and_simulate_trading(pair, sector, cluster_num, upper_threshold=1, lowe
     test = price_data[train_size:]
 
     # The selected pair of stocks
+    if not isinstance(pair, tuple) or len(pair) != 2:
+        raise ValueError("Invalid pair. Expected a tuple of two stocks.")
     stock1, stock2 = pair
 
     # Calculate the z-score spread
@@ -365,19 +366,21 @@ def plot_and_simulate_trading(pair, sector, cluster_num, upper_threshold=1, lowe
     plt.axhline(0, color='black', linestyle='--', label='Mean', linewidth=2)
     plt.axhline(upper_threshold, color='red', linestyle='--', label='Upper threshold', linewidth=2)
     plt.axhline(lower_threshold, color='green', linestyle='--', label='Lower threshold', linewidth=2)
-    plt.title(f'Z-score Spread and Trading Signals for {stock1} and {stock2} in {sector} Sector, Cluster {cluster_num}',
-              fontsize=18)
+    title = f'Z-score Spread and Trading Signals for {stock1} and {stock2} in {sector} Sector, Cluster {cluster_num}'
+    plt.title(title, fontsize=18)
     plt.xlabel('Time', fontsize=14)
     plt.ylabel('Z-score Spread', fontsize=14)
     plt.legend(loc='best', fontsize=12)
     plt.grid()
-    plt.show()
+
+    # Save the figure
+    plt.savefig(title.replace(' ', '_') + '.png')
 
     # Simulate trading
     cash = initial_cash
     position = 0  # 1 if we own the stock, -1 if we have shorted the stock
     trades = []  # History of trades
-    for date, z_score in z_score_spread.iteritems():
+    for date, z_score in z_score_spread.items():
         if z_score < lower_threshold and position <= 0:
             # Buy the stock
             price = z_score
@@ -393,3 +396,4 @@ def plot_and_simulate_trading(pair, sector, cluster_num, upper_threshold=1, lowe
 
     trades_df = pd.DataFrame(trades)
     return trades_df
+
