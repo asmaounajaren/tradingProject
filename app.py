@@ -88,10 +88,12 @@ def selectedPair():
         trade_history = trade.to_html()
         print(trade_history)
         response ={
-            'trade_history': trade
+            'trade_history': trade_history
         }
         return jsonify(response)
 
+    else:
+        return render_template('index.html')
 @app.route("/optimisation")
 def about_page():
     return render_template("optimisation.html")

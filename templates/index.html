@@ -1,190 +1,210 @@
 {% extends'base.html' %}
 {% block title %}
-Home page
+    Home page
 {% endblock %}
 {% block styles %}
-{{super()}}
-<link rel="stylesheet" href="{{url_for('static', filename='css/multisteps.css')}}">
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/multisteps.css') }}">
 {% endblock %}
 {% block body %}
-  <section class="home-section">
-    <div class="text">Dashboard index</div>
-    <div class="content">
-      <div class="content__inner">
-        <div class="container overflow-hidden">
-          <div class="multisteps-form">
-            <div class="row">
-              <div class="col-12 col-lg-8 ml-auto mr-auto mb-4">
-                <div class="multisteps-form__progress">
-                  <button class="multisteps-form__progress-btn js-active" type="button" title="User Info">Step 1</button>
-                  <button class="multisteps-form__progress-btn" type="button" title="Address">Step 2</button>
-                  <button class="multisteps-form__progress-btn" type="button" title="Message">Step 3</button>
+    <section class="home-section">
+        <div class="text">Dashboard index</div>
+        <div class="content">
+            <div class="content__inner">
+                <div class="container overflow-hidden">
+                    <div class="multisteps-form">
+                        <div class="row">
+                            <div class="col-12 col-lg-8 ml-auto mr-auto mb-4">
+                                <div class="multisteps-form__progress">
+                                    <button class="multisteps-form__progress-btn js-active" type="button"
+                                            title="User Info">Step 1
+                                    </button>
+                                    <button class="multisteps-form__progress-btn" type="button" title="Address">Step 2
+                                    </button>
+                                    <button class="multisteps-form__progress-btn" type="button" title="Message">Step 3
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-lg-8 m-auto">
+                                <form class="multisteps-form__form">
+                                    <div class="multisteps-form__panel shadow p-4 rounded bg-white js-active"
+                                         data-animation="scaleIn">
+                                        <h3 class="multisteps-form__title">Your User Info</h3>
+                                        <div class="multisteps-form__content">
+                                            <div class="form-row mt-4">
+                                                <div class="col-12 col-sm-6 mt-4 mt-sm-0">
+                                                    <form action="/" method="POST">
+                                                        <!-- Add the dropdown list with onchange event -->
+                                                        <select class="multisteps-form__select form-control"
+                                                                id="sector-dropdown" name="sector"
+                                                                onchange="handleSectorChange()">
+                                                            <option selected disabled>Select a sector:</option>
+                                                            {% for sector in sectors %}
+                                                                <option onchange=""
+                                                                        value="{{ sector }}">{{ sector }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="form-row mt-4">
+                                                <h4>Clusters</h4>
+                                                <table class="table" id="cluster-table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th scope="col" style="width: 20%">Cluster</th>
+                                                        <th scope="col">Stocks</th>
+                                                    </tr>
+                                                    </thead>
+                                                    {% if clusters %}
+                                                        {% for cluster, stocks in clusters.items() %}
+                                                            <tr>
+                                                                <th scope="row" style="width: 20%">{{ cluster }}</th>
+                                                                <td>{{ stocks|join(', ') }}</td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </table>
+                                                <img id="plot-image" src="" alt="{{ sector }} Plot"
+                                                     style="height: 50%;width: 100%">
+                                                <br>
+                                            </div>
+                                            <div class="form-row mt-4">
+                                            </div>
+                                            <div class="button-row d-flex mt-4">
+                                                <button class="btn btn-primary ml-auto js-btn-next" type="button"
+                                                        title="Next">Next
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="multisteps-form__panel shadow p-4 rounded bg-white"
+                                         data-animation="scaleIn">
+                                        <h5 id="selected-sector2"> Vous devez selectionner premierement un secteur
+                                            !</h5>
+                                        <div class="multisteps-form__content">
+                                            <div class="form-row mt-4">
+                                                <div class="col-3 col-sm-3 mt-4 mt-sm-0">
+                                                    <form action="/" method="post">
+                                                        <!-- Add the dropdown list with onchange event -->
+                                                        <select class="multisteps-form__select form-control"
+                                                                id="cluster-dropdown" name="cluster"
+                                                                onchange="handleSectorChange()">
+                                                            <option onchange="" value="1" disabled selected>select a
+                                                                cluster
+                                                            </option>
+                                                            <option onchange="" value="1">1</option>
+                                                            <option onchange="" value="2">2</option>
+                                                            <option onchange="" value="3">3</option>
+                                                            <option onchange="" value="4">4</option>
+                                                        </select>
+                                                    </form>
+                                                </div>
+                                                <div class="col-3 col-sm-3 mt-4 mt-sm-0">
+                                                    <input id="level-coint" class="multisteps-form__input form-control"
+                                                           type='number' step='0.1' value='0.1' placeholder='0.0'/>
+                                                </div>
+                                                <div class="col-3 col-sm-3 mt-4 mt-sm-0">
+                                                    <input id="mean-revert" class="multisteps-form__input form-control"
+                                                           type='number' step='0.1' value='0.1' placeholder='0.0'/>
+                                                </div>
+                                                <div class="col-3 col-sm-3 mt-4 mt-sm-0">
+                                                    <button id="btn-exec" class="btn btn-info" type='submit'
+                                                            placeholder=''>Execute
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="form-row mt-4">
+                                                <div class="col-3 col-sm-3 mt-4 mt-sm-0">
+                                                    <form action="/selectedPair" method="post">
+                                                        <!-- Add the dropdown list with onchange event -->
+                                                        <select id="pair-select"
+                                                                class="multisteps-form__select form-control"
+                                                                name="pairs">
+                                                            <option disabled selected>select a pair</option>
+
+                                                        </select>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                             <div id="trade_history" class="form-row mt-4">
+                                            </div>
+                                            <div class="button-row d-flex mt-4">
+                                                <button class="btn btn-primary js-btn-prev" type="button" title="Prev">
+                                                    Prev
+                                                </button>
+                                                <button class="btn btn-primary ml-auto js-btn-next" type="button"
+                                                        title="Next">Next
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="multisteps-form__panel shadow p-4 rounded bg-white"
+                                         data-animation="scaleIn">
+                                        <h3 class="multisteps-form__title">Additional Message</h3>
+                                        <div class="multisteps-form__content">
+                                            <div class="form-row mt-4">
+                                                <textarea class="multisteps-form__textarea form-control"
+                                                          placeholder="Additional Message and Questions"></textarea>
+                                            </div>
+                                            <div class="button-row d-flex mt-4">
+                                                <button class="btn btn-primary js-btn-prev" type="button" title="Prev">
+                                                    Prev
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-            <div class="row">
-              <div class="col-12 col-lg-8 m-auto">
-                <form class="multisteps-form__form">
-                  <div class="multisteps-form__panel shadow p-4 rounded bg-white js-active" data-animation="scaleIn">
-                    <h3 class="multisteps-form__title">Your User Info</h3>
-                    <div class="multisteps-form__content">
-                      <div class="form-row mt-4">
-                        <div class="col-12 col-sm-6 mt-4 mt-sm-0">
-                            <form action="/" method="POST">
-                                <!-- Add the dropdown list with onchange event -->
-                                <select class="multisteps-form__select form-control" id="sector-dropdown" name="sector" onchange="handleSectorChange()">
-                                    <option selected disabled >Select a sector:</option>
-                                    {% for sector in sectors %}
-                                        <option onchange="" value="{{ sector }}" >{{ sector }}</option>
-                                    {% endfor %}
-                                </select>
-                            </form>
-                        </div>
-                      </div>
-                      <div class="form-row mt-4">
-                        <h4>Clusters</h4>
-                              <table class="table" id="cluster-table">
-                                  <thead>
-                                      <tr>
-                                          <th scope="col" style="width: 20%">Cluster</th>
-                                          <th scope="col">Stocks</th>
-                                      </tr>
-                                  </thead>
-                                  {% if clusters %}
-                                      {% for cluster, stocks in clusters.items() %}
-                                      <tr>
-                                          <th scope="row" style="width: 20%">{{ cluster }}</th>
-                                          <td>{{ stocks|join(', ') }}</td>
-                                      </tr>
-                                      {% endfor %}
-                                  {% endif %}
-                              </table>
-                          <img id="plot-image" src="" alt="{{ sector }} Plot" style="height: 50%;width: 100%">
-                          <br>
-                       </div>
-                        <div class="form-row mt-4">
-                      </div>
-                      <div class="button-row d-flex mt-4">
-                        <button class="btn btn-primary ml-auto js-btn-next" type="button" title="Next">Next</button>
-                      </div>
-                    </div>
-                  </div>
-                    <div class="multisteps-form__panel shadow p-4 rounded bg-white" data-animation="scaleIn">
-                        <h5 id="selected-sector2"> Vous devez selectionner premierement un secteur !</h5>
-                    <div class="multisteps-form__content">
-                      <div class="form-row mt-4">
-                        <div class="col-3 col-sm-3 mt-4 mt-sm-0">
-                            <form action="/">
-                                <!-- Add the dropdown list with onchange event -->
-                                <select class="multisteps-form__select form-control" id="cluster-dropdown" name="cluster" onchange="handleSectorChange()">
-                                    <option onchange="" value="1" disabled selected>select a cluster</option>
-                                    <option onchange="" value="1" >1</option>
-                                    <option onchange="" value="2" >2</option>
-                                    <option onchange="" value="3" >3</option>
-                                    <option onchange="" value="4" >4</option>
-                                </select>
-                            </form>
-                        </div>
-                        <div class="col-3 col-sm-3 mt-4 mt-sm-0">
-                          <input id="level-coint" class="multisteps-form__input form-control"  type='number' step='0.1' value='0.1' placeholder='0.0' />
-                        </div>
-                        <div class="col-3 col-sm-3 mt-4 mt-sm-0">
-                          <input id="mean-revert" class="multisteps-form__input form-control"  type='number' step='0.1' value='0.1' placeholder='0.0' />
-                        </div>
-                          <div class="col-3 col-sm-3 mt-4 mt-sm-0">
-                              <button id="btn-exec" class="btn btn-info" type='submit' placeholder=''>Execute</button>
-                        </div>
-                      </div>
-                      <div class="form-row mt-4">
-                        <div class="col">
-                          <div class="col-3 col-sm-3 mt-4 mt-sm-0">
-                            <form action="/">
-                                <!-- Add the dropdown list with onchange event -->
-                                <select class="multisteps-form__select form-control" id="pair-select" name="pairs">
-                                    <option disabled selected>select a pair</option>
-
-                                </select>
-                            </form>
-                        </div>
-                        </div>
-                      </div>
-                      <div class="form-row mt-4">
-                        <div class="col-12 col-sm-6">
-                          <input class="multisteps-form__input form-control" type="text" placeholder="City"/>
-                        </div>
-                        <div class="col-6 col-sm-3 mt-4 mt-sm-0">
-                          <select class="multisteps-form__select form-control">
-                            <option selected="selected">State...</option>
-                            <option>...</option>
-                          </select>
-                        </div>
-                        <div class="col-6 col-sm-3 mt-4 mt-sm-0">
-                          <input class="multisteps-form__input form-control" type="text" placeholder="Zip"/>
-                        </div>
-                      </div>
-                      <div class="button-row d-flex mt-4">
-                        <button class="btn btn-primary js-btn-prev" type="button" title="Prev">Prev</button>
-                        <button class="btn btn-primary ml-auto js-btn-next" type="button" title="Next">Next</button>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="multisteps-form__panel shadow p-4 rounded bg-white" data-animation="scaleIn">
-                    <h3 class="multisteps-form__title">Additional Message</h3>
-                    <div class="multisteps-form__content">
-                      <div class="form-row mt-4">
-                        <textarea class="multisteps-form__textarea form-control" placeholder="Additional Message and Questions"></textarea>
-                      </div>
-                      <div class="button-row d-flex mt-4">
-                        <button class="btn btn-primary js-btn-prev" type="button" title="Prev">Prev</button>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
-    </div>
-  </section>
+    </section>
     {% block scripts %}
-        {{super()}}
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-    var selectedSector;
-    function handleSectorChange(){
-        $(document).ready(function() {
-            // Handle the onchange event of the dropdown list
-            $('#sector-dropdown').change(function () {
-                 selectedSector = $(this).val();
-                // Send an AJAX request to the server
-                $.ajax({
-                    url: '/',
-                    type: 'POST',
-                    data: {
-                        sector: selectedSector
-                    },
-                    success: function (response) {
-                        // Handle the response from the server
-                        updateTable(response.clusters);
-                        updateImage(response.plot_img);
-                        console.log("in 1st function")
-                        console.log(response.pair_options)
-                        document.getElementById("selected-sector2").textContent = selectedSector;
+        {{ super() }}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            var selectedSector;
 
-                    },
-                    error: function (xhr, status, error) {
-                        // Handle any errors that occur during the AJAX request
-                        console.log(error);
-                    }
+            function handleSectorChange() {
+                $(document).ready(function () {
+                    // Handle the onchange event of the dropdown list
+                    $('#sector-dropdown').change(function () {
+                        selectedSector = $(this).val();
+                        console.log("hna f fonction hadleSelectorChange")
+                        // Send an AJAX request to the server
+                        $.ajax({
+                            url: '/',
+                            type: 'POST',
+                            data: {
+                                selectedSector: selectedSector
+                            },
+                            success: function (response) {
+                                // Handle the response from the server
+                                updateTable(response.clusters);
+                                updateImage(response.plot_img);
+                                console.log("in 1st function")
+                                document.getElementById("selected-sector2").textContent = selectedSector;
+
+                            },
+                            error: function (xhr, status, error) {
+                                // Handle any errors that occur during the AJAX request
+                                console.log(error);
+                            }
+                        });
+                    });
                 });
-            });
-        });
-    }
-            function updateImage(plotImg) {
-              // Update the image source dynamically
-              $('#plot-image').attr('src', 'data:image/png;base64,' + plotImg);
             }
+
+            function updateImage(plotImg) {
+                // Update the image source dynamically
+                $('#plot-image').attr('src', 'data:image/png;base64,' + plotImg);
+            }
+
             function updateTable(clusters) {
                 var tableBody = $('#cluster-table tbody');
                 tableBody.empty();
@@ -198,75 +218,114 @@ Home page
                     tableBody.append(row);
                 }
             }
-            {#function validateInput(event) {#}
-            {#    const input = event.target;#}
-            {#    if (input.value < 0) {#}
-            {#      input.value = 0;#}
-            {#    }#}
-            {#}#}
 
-                $(document).ready(function () {
-    $('#btn-exec').click(function () {
-        var sector = selectedSector;  // field with ID 'sector' to capture the sector value
-        console.log(sector)
-        var cluster = $('#cluster-dropdown').val(); // Selected cluster from the dropdown
-        var levelCoint = $('#level-coint').val(); // Value of level-coint input
-        var meanRevert = $('#mean-revert').val(); // Value of mean-revert input
-
-        $.ajax({
-            type: 'POST',
-            url: '/',
-            data: {sector: sector,
-                cluster: cluster,
-                levelCoint: levelCoint,
-                meanRevert: meanRevert
-            },
-            success: function (response) {
-                var pairOptions = response.options;
-                console.log("paiiiiiiiiiiiiiiiiiiiiiiiiiiiiirs")
-                console.log(pairOptions)
-                // Clear existing options
-                $('#pair-select').empty();
-                console.log('clevel------->', levelCoint)
-                console.log('mRevert------->', meanRevert)
-
-                // Iterate over each list in the dictionary
-                for (var key in pairOptions) {
-                    if (pairOptions.hasOwnProperty(key)) {
-                        var pairList = pairOptions[key];
-                        console.log("inside loop")
-                        console.log(pairOptions[key])
-
-                        // Concatenate pairs into a single string
-                        var pairString = pairList.map(function (pair) {
-                            return pair;
-                        }).join(', ');
-
-                        // Create an option group
-                        var optGroup = $('<optgroup/>', {
-                            label: key
-                        });
-
-                        // Create an option with the concatenated pairs
-                        const option = $('<option/>', {
-                            value: pairString,
-                            text: pairString
-                        });
-
-                        optGroup.append(option);
-
-
-                        // Append the option group to the select dropdown
-                        $('#pair-select').append(optGroup);
-                    }
+            function validateInput(event) {
+                const input = event.target;
+                if (input.value < 0) {
+                    input.value = 0;
                 }
             }
-        });
-    });
-});
+
+            $(document).ready(function () {
+
+                $('#pair-select').change(function () {
+                    var selectedPair = $(this).val();
+                    var cluster = $('#cluster-dropdown').val();
+                    console.log('Selected Pair:', selectedPair);
+
+                    // Pass the selected value to app.py using AJAX
+                    $.ajax({
+                        type: 'POST',
+                        url: '/selectedPair',
+                        data: {
+                            selectedPair: selectedPair,
+                            selectedSector: selectedSector,
+                            cluster: cluster,
+                        },
+                        success: function (response) {
+                            console.log('Value sent to app.py');
+                            var trade_history = response.trade_history;
+                            console.log(trade_history)
+                            document.getElementById("trade_history").innerHTML=trade_history ;
+                            // Display the trade history
+                            {#var tradeHistoryHtml = '<h2>Trade History</h2>';#}
+                            {#tradeHistoryHtml += '<table>';#}
+                            {#tradeHistoryHtml += '<tr><th>Date</th><th>Action</th><th>Price</th><th>Cash</th></tr>';#}
+                            {#tradeHistory.forEach(function(trade) {#}
+                            {#    tradeHistoryHtml += '<tr>';#}
+                            {#    tradeHistoryHtml += '<td>' + trade.Date + '</td>';#}
+                            {#    tradeHistoryHtml += '<td>' + trade.Action + '</td>';#}
+                            {#    tradeHistoryHtml += '<td>' + trade.Price + '</td>';#}
+                            {#    tradeHistoryHtml += '<td>' + trade.Cash + '</td>';#}
+                            {#    tradeHistoryHtml += '</tr>';#}
+                            {#g});#}
+                            {#tradeHistoryHtml += '</table>';#}
+                            {##}
+                            {#$('#trade-history').html(tradeHistoryHtml);#}
+                        }
+                    });
+                });
+                $('#btn-exec').click(function () {
+                    var sector = selectedSector;  // field with ID 'sector' to capture the sector value
+                    console.log(sector)
+                    var cluster = $('#cluster-dropdown').val(); // Selected cluster from the dropdown
+                    var levelCoint = $('#level-coint').val(); // Value of level-coint input
+                    var meanRevert = $('#mean-revert').val(); // Value of mean-revert input
+                    $.ajax({
+                        type: 'POST',
+                        url: '/click',
+                        data: {
+                            sector: sector,
+                            cluster: cluster,
+                            levelCoint: levelCoint,
+                            meanRevert: meanRevert,
+                        },
+                        success: function (response) {
+                            var pairOptions = response.options;
+                            console.log("paiiiiiiiiiiiiiiiiiiiiiiiiiiiiirs")
+                            console.log(pairOptions)
+                            // Clear existing options
+                            $('#pair-select').empty();
+                            console.log('clevel------->', levelCoint)
+                            console.log('mRevert------->', meanRevert)
+
+                            // Iterate over each list in the dictionary
+                            for (var key in pairOptions) {
+                                if (pairOptions.hasOwnProperty(key)) {
+                                    var pairList = pairOptions[key];
+                                    console.log("inside loop")
+                                    console.log(pairOptions[key])
+
+                                    // Concatenate pairs into a single string
+                                    var pairString = pairList.map(function (pair) {
+                                        return pair;
+                                    }).join(', ');
+
+                                    // Create an option group
+                                    var optGroup = $('<optgroup/>', {
+                                        label: key
+                                    });
+
+                                    // Create an option with the concatenated pairs
+                                    const option = $('<option/>', {
+                                        value: pairString,
+                                        text: pairString
+                                    });
+
+                                    optGroup.append(option);
 
 
-    </script>
-        <script  src="../static/js/function.js"></script>
+                                    // Append the option group to the select dropdown
+                                    $('#pair-select').append(optGroup);
+                                }
+                            }
+                        }
+                    });
+                });
+            });
+
+
+        </script>
+        <script src="../static/js/function.js"></script>
     {% endblock %}
 {% endblock %}
