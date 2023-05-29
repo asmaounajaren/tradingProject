@@ -400,3 +400,212 @@ def plot_and_simulate_trading(pair, sector, cluster_num, upper_threshold=1, lowe
     trades_df = pd.DataFrame(trades)
     return trades_df,image_base64
 
+#STEP3:
+# WE WILL HAVE ONE PARAMETER WHICH IS THE STOP LOSS
+
+stop_loss_level = 0.56  # it should be float type
+
+
+# function 1: gives the statistics of the STRATEGY CHOSEN
+
+def calculate_performance(z_score_spread, stock1, stock2, sector, lower_threshold, upper_threshold, initial_cash,
+                          stop_loss_level):
+    # Load sector data
+    selected_stocks_df, price_data = load_sector_data(sector)
+
+    # Define the size of the train set
+    train_size = int(len(price_data) * 0.8)
+
+    # Split the data
+    train = price_data[:train_size]
+    test = price_data[train_size:]
+
+    # Create a new DataFrame to store all data
+    data = pd.DataFrame(index=z_score_spread.index)
+    data['stock1_price'] = test[stock1]
+    data['stock2_price'] = test[stock2]
+    data['z_score_spread'] = z_score_spread
+    data['buy_signal'] = z_score_spread < lower_threshold
+    data['sell_signal'] = z_score_spread > upper_threshold
+
+    # Initialize a column for the trading position and set it to 0 (no position)
+    data['position'] = 0
+
+    # When there's a buy signal, set the position to 1 (long the spread)
+    data.loc[data['buy_signal'], 'position'] = 1
+
+    # When there's a sell signal, set the position to -1 (short the spread)
+    data.loc[data['sell_signal'], 'position'] = -1
+
+    # Initialize a column for the entry price and set it to the price at which each trade is entered
+    data['entry_price'] = data.loc[data['position'].diff() != 0, 'stock1_price']
+
+    # Forward fill the entry prices
+    data['entry_price'] = data['entry_price'].ffill()
+
+    # Calculate the loss from the entry price for each trade
+    data['loss'] = (data['entry_price'] - data['stock1_price']) / data['entry_price']
+
+    # When the loss exceeds the stop loss level, close the position (set to 0)
+    data.loc[data['loss'] > stop_loss_level, 'position'] = 0
+
+    # Calculate the daily returns of the strategy by taking the percentage change of the spread and multiplying by the position
+    data['daily_returns'] = (data['stock1_price'] / data['stock1_price'].shift() - 1) - (
+                data['stock2_price'] / data['stock2_price'].shift() - 1)
+    data['strategy_returns'] = data['daily_returns'] * data['position']
+
+    # Calculate the cumulative returns of the strategy
+    data['cumulative_returns'] = (1 + data['strategy_returns']).cumprod()
+
+    # Calculate the cash over time
+    data['cash'] = initial_cash * data['cumulative_returns']
+
+    # Calculate the daily cash returns
+    cash_returns = data['cash'].pct_change()
+
+    # Total return
+    total_return = data['cash'].iloc[-1] / initial_cash - 1
+
+    # Annualized return
+    years = len(data) / 252  # Assumes 252 trading days in a year
+    annualized_return = (1 + total_return) ** (1 / years) - 1
+
+    # Volatility
+    volatility = cash_returns.std() * np.sqrt(252)  # Annualize the volatility
+
+    # Sharpe ratio (assuming a risk-free rate of 0)
+    sharpe_ratio = annualized_return / volatility
+
+    # Maximum drawdown
+    cash_peak = data['cash'].cummax()
+    drawdown = (data['cash'] - cash_peak) / cash_peak
+    data['drawdown'] = drawdown
+    max_drawdown = drawdown.min()
+
+    # Number of trades
+    num_trades = data['position'].diff().abs().sum()
+
+    # Win rate
+    trade_returns = cash_returns * data['position'].shift()
+    win_rate = (trade_returns > 0).mean()
+
+    final_cash = data['cash'].iloc[-1]
+    total_return = total_return * 100
+    annualized_return = annualized_return * 100
+    volatility = volatility * 100
+    max_drawdown = max_drawdown * 100
+    win_rate = win_rate * 100
+
+    return data, final_cash, total_return, annualized_return, volatility, sharpe_ratio, max_drawdown, num_trades, win_rate
+
+
+# function 2: gives the CHARTS OF THE STRATEGIES
+
+def plot_performance(data, total_return, annualized_return, volatility, sharpe_ratio, max_drawdown, num_trades,
+                     win_rate, sector, stock1, stock2):
+    fig, axs = plt.subplots(5, 1, figsize=(14, 25))
+
+    # Plot 1: Cumulative Returns over Time
+    axs[0].plot(data['cumulative_returns'], color='blue', label='Cumulative Returns')
+    axs[0].set_title('Cumulative Returns over Time')
+    axs[0].set_xlabel('Date')
+    axs[0].set_ylabel('Cumulative Returns')
+    axs[0].grid(True)
+    axs[0].legend()
+
+    # Plot 2: Daily Returns over Time
+    axs[1].plot(data['daily_returns'], color='purple', label='Daily Returns')
+    axs[1].set_title('Daily Returns over Time')
+    axs[1].set_xlabel('Date')
+    axs[1].set_ylabel('Daily Returns')
+    axs[1].grid(True)
+    axs[1].legend()
+
+    # Plot 3: Strategy Returns over Time
+    axs[2].plot(data['strategy_returns'], color='green', label='Strategy Returns')
+    axs[2].set_title('Strategy Returns over Time')
+    axs[2].set_xlabel('Date')
+    axs[2].set_ylabel('Strategy Returns')
+    axs[2].grid(True)
+    axs[2].legend()
+
+    # Plot 4: Drawdown over Time
+    axs[3].plot(data['drawdown'], color='red', label='Drawdown')
+    axs[3].set_title('Drawdown over Time')
+    axs[3].set_xlabel('Date')
+    axs[3].set_ylabel('Drawdown')
+    axs[3].grid(True)
+    axs[3].legend()
+
+    # Plot 5: Cash Evolution
+    axs[4].plot(data['cash'], color='orange', label='Cash Evolution')
+    axs[4].set_title('Cash Evolution over Time')
+    axs[4].set_xlabel('Date')
+    axs[4].set_ylabel('Cash')
+    axs[4].grid(True)
+    axs[4].legend()
+
+    # Display statistics as labels in the chart
+    stats_text = f"Total return: {total_return:.2f}%\nAnnualized return: {annualized_return:.2f}%\nVolatility: {volatility:.2f}%\nSharpe ratio: {sharpe_ratio:.2f}\nMax drawdown: {max_drawdown:.2f}%\nNumber of trades: {num_trades}\nWin rate: {win_rate:.2f}%"
+    axs[4].text(0.02, 0.5, stats_text, transform=axs[4].transAxes, fontsize=10, verticalalignment='center')
+
+    plt.tight_layout()
+
+    # filename = f"performance_{sector}_{stock1}_{stock2}_.png"
+    # plt.savefig(filename, format='png', dpi=300)
+    # plt.show()
+
+    filename = f"performance_{sector}_{stock1}_{stock2}.png"
+
+    # Save the figure with the specified filename
+    plt.savefig(filename, format='png')
+
+    # Alternatively, you can save the figure to the `image_buffer` and convert it to base64
+    image_buffer = io.BytesIO()
+    plt.savefig(image_buffer, format='png')
+    image_buffer.seek(0)
+    image_base64 = base64.b64encode(image_buffer.getvalue()).decode()
+    #oooooooooooooooooo
+
+    return image_base64
+
+"""
+the use of function 1
+"""
+
+sector = 'Industrials'
+
+# Analyze cluster pairs and select the first pair
+selected_pairs = analyze_cluster_pairs(sector, 2)
+stock1, stock2 = selected_pairs[0]
+
+# Load sector data, split into train and test sets
+selected_stocks_df, price_data = load_sector_data(sector)
+train_size = int(len(price_data) * 0.8)
+train = price_data[:train_size]
+test = price_data[train_size:]
+
+# Calculate z-score spread
+z_score_spread = calculate_z_score_spread(test, stock1, stock2)
+
+# Define upper and lower thresholds
+upper_threshold = 1
+lower_threshold = -1
+
+# Set initial cash and stop loss level
+initial_cash = 1000
+stop_loss_level = 0.3
+
+# Calculate performance with stop loss
+data, final_cash, total_return, annualized_return, volatility, sharpe_ratio, max_drawdown, num_trades, win_rate = calculate_performance(z_score_spread, stock1, stock2, sector, lower_threshold, upper_threshold, initial_cash, stop_loss_level)
+
+#WE GONNA PLOT THOSE STATS final_cash, total_return, annualized_return, volatility, sharpe_ratio, max_drawdown, num_trades, win_rate AND ALSO THE DATA TABLE IN THE END OF THE PLOT AND STATS
+
+
+"""
+the use of function 2
+"""
+
+# plot_performance(data, total_return, annualized_return, volatility, sharpe_ratio, max_drawdown, num_trades, win_rate, sector, stock1, stock2)
+
+

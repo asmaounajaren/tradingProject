@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify, session
 from register import reg
 import os
 import pickle
-from model import cluster_stocks,visualize_clusters,analyze_cluster_pairs,plot_and_simulate_trading
+from model import cluster_stocks,visualize_clusters,analyze_cluster_pairs,plot_and_simulate_trading,calculate_performance,z_score_spread,plot_performance
 
 app = Flask(__name__)
 app.secret_key = os.urandom(32)
@@ -72,8 +72,8 @@ def selectedPair():
         print("pairs without space")
         print(pairs)
         print("tuuple--------->",tuple_pairs )
-        selectedSector=request.form.get('selectedSector')
-        clusterNum=request.form.get('cluster')
+        selectedSector = request.form.get('selectedSector')
+        clusterNum = request.form.get('cluster')
         print("cluster")
         print("cluser numero: ",clusterNum )
         print("secteur: ",selectedSector)
@@ -94,10 +94,38 @@ def selectedPair():
 @app.route("/statistics", methods=['GET','POST'])
 def statistics():
     if request.method == 'POST':
-        return jsonify()
+        selected_pairs = request.form.get('selectedPair')
+        selectedSector = request.form.get('selectedSector')
+        print('pair statistics', selected_pairs)
+        tuple_pairs = tuple(selected_pairs.split(','))
+        pairs = tuple(item.strip() for item in tuple_pairs)
+        dataa, final_cash, total_return, annualized_return, volatility, sharpe_ratio, max_drawdown, num_trades, win_rate=calculate_performance(z_score_spread,pairs[0],pairs[1],selectedSector,-1,1,10000,0.3)
+        print(dataa, 'finalcash',final_cash,'total_return', total_return,'annualized_return', annualized_return, 'volatility',volatility, 'sharpe_ratio',sharpe_ratio,'max_drawdown', max_drawdown,'num_trades', num_trades,'win_rate', win_rate)
+        statisticimage=plot_performance(dataa,total_return,annualized_return,volatility,sharpe_ratio,max_drawdown,num_trades,win_rate,selectedSector,pairs[0],pairs[1])
+        print("statistic image")
+        print(statisticimage)
+        response = {
+            "dataa": dataa.to_html(),
+            "final_cash": round(final_cash, 2),
+            "total_return": round(total_return,2),
+            "annualized_return": round(annualized_return,2),
+            "volatility": round(volatility,2),
+            "sharpe_ratio": round(sharpe_ratio,2),
+            "max_drawdown": round(max_drawdown,2),
+            "num_trades": round(num_trades,2),
+            "win_rate": round(win_rate,2),
+            "statisticimage": statisticimage
+        }
+        return jsonify(response)
 @app.route("/optimisation")
 def about_page():
     return render_template("optimisation.html")
+@app.route("/historique")
+def historique():
+    if request.method == 'POST':
+        return render_template("historique.html")
+    else:
+        return render_template("historique.html")
 
 @app.route("/login")
 def login_page():

@@ -80,7 +80,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="multisteps-form__panel shadow p-4 rounded bg-white"
+                                    <div class="multisteps-form__panel shadow p-2 rounded bg-white"
                                          data-animation="scaleIn">
                                         <h5 id="selected-sector2"> Vous devez selectionner premierement un secteur
                                             !</h5>
@@ -140,19 +140,75 @@
                                                 <button class="btn btn-primary js-btn-prev" type="button" title="Prev">
                                                     Prev
                                                 </button>
-                                                <button class="btn btn-primary ml-auto js-btn-next" type="button"
+                                                <button id="next-click" class="btn btn-primary ml-auto js-btn-next" type="submit"
                                                         title="Next">Next
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="multisteps-form__panel shadow p-4 rounded bg-white"
+                                    <div class="multisteps-form__panel shadow p-2 rounded bg-white"
                                          data-animation="scaleIn">
                                         <h3 class="multisteps-form__title">Additional Message</h3>
+                                        <ul class="box-info">
+                                            <li>
+                                                <span class="text">
+                                                    <h3 id="final_cash"></h3>
+                                                    <p>Final Cash</p>
+                                                </span>
+                                            </li>
+                                            <li>
+                                                <span class="text">
+                                                    <h3 id="total_return"></h3>
+                                                    <p>Total Return</p>
+                                                </span>
+                                            </li>
+                                            <li>
+                                                <span class="text">
+                                                    <h3 id="annualized_return"></h3>
+                                                    <p> Annualized Return</p>
+                                                </span>
+                                            </li>
+                                            <li>
+                                                <span class="text">
+                                                    <h3 id="volatility"></h3>
+                                                    <p>Volatility</p>
+                                                </span>
+                                            </li>
+                                            <li>
+                                                <span class="text">
+                                                    <h3 id="sharpe_ratio"></h3>
+                                                    <p>Sharpe Ratio</p>
+                                                </span>
+                                            </li>
+                                            <li>
+                                                <span class="text">
+                                                    <h3 id="max_drawdown"></h3>
+                                                    <p>Max Drawdown </p>
+                                                </span>
+                                            </li>
+                                            <li>
+                                                <span class="text">
+                                                    <h3 id="num_trades"></h3>
+                                                    <p>Num Trades</p>
+                                                </span>
+                                            </li>
+                                            <li>
+                                                <span class="text">
+                                                    <h3 id="win_rate"></h3>
+                                                    <p>Win Rate</p>
+                                                </span>
+                                            </li>
+                                        </ul>
+                                        <div  class="form-row mt-4">
+                                                <img id="statistics-image" src="" alt="statistics-image"
+                                                     style="height: 50%;width: 100%">
+                                            </div>
+{#                                        <div class="form-row mt-4">#}
+{#                                            <a href="/historique" target="_self">Learn More!</a>#}
+{#                                        </div>#}
                                         <div class="multisteps-form__content">
-                                            <div class="form-row mt-4">
-                                                <textarea class="multisteps-form__textarea form-control"
-                                                          placeholder="Additional Message and Questions"></textarea>
+                                            <div id="data" class="form-row mt-4">
+
                                             </div>
                                             <div class="button-row d-flex mt-4">
                                                 <button class="btn btn-primary js-btn-prev" type="button" title="Prev">
@@ -174,7 +230,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script>
             var selectedSector;
-
+            var selectedPair;
             function handleSectorChange() {
                 $(document).ready(function () {
                     // Handle the onchange event of the dropdown list
@@ -236,10 +292,14 @@
                 // Update the image source dynamically
                 $('#zscore-image').attr('src', 'data:image/png;base64,' + zscoreImg);
             }
+            function updateImageStatistics(statisticsImg){
+                $('#statistics-image').attr('src', 'data:image/png;base64,' + statisticsImg);
+
+            }
             $(document).ready(function () {
 
                 $('#pair-select').change(function () {
-                    var selectedPair = $(this).val();
+                    selectedPair = $(this).val();
                     var cluster = $('#cluster-dropdown').val();
                     console.log('Selected Pair:', selectedPair);
 
@@ -256,29 +316,39 @@
                             console.log('Value sent to app.py');
                             var trade_history = response.trade_history;
                             var zscore_image=response.zscore_image;
-                            console.log(trade_history)
-                            console.log("Imaage ZScore")
-                            console.log(zscore_image)
+                            console.log("trade_history")
+                            {#console.log("Imaage ZScore")#}
+                            {#console.log(zscore_image)#}
                             document.getElementById("trade_history").innerHTML=trade_history ;
                             updateImageZscore(response.zscore_image)
-
-                            // Display the trade history
-                            {#var tradeHistoryHtml = '<h2>Trade History</h2>';#}
-                            {#tradeHistoryHtml += '<table>';#}
-                            {#tradeHistoryHtml += '<tr><th>Date</th><th>Action</th><th>Price</th><th>Cash</th></tr>';#}
-                            {#tradeHistory.forEach(function(trade) {#}
-                            {#    tradeHistoryHtml += '<tr>';#}
-                            {#    tradeHistoryHtml += '<td>' + trade.Date + '</td>';#}
-                            {#    tradeHistoryHtml += '<td>' + trade.Action + '</td>';#}
-                            {#    tradeHistoryHtml += '<td>' + trade.Price + '</td>';#}
-                            {#    tradeHistoryHtml += '<td>' + trade.Cash + '</td>';#}
-                            {#    tradeHistoryHtml += '</tr>';#}
-                            {#g});#}
-                            {#tradeHistoryHtml += '</table>';#}
-                            {##}
-                            {#$('#trade-history').html(tradeHistoryHtml);#}
                         }
                     });
+                });
+
+                $('#next-click').click(function () {
+                     $.ajax({
+                        type: 'POST',
+                        url: '/statistics',
+                        data: {
+                            selectedSector: selectedSector,
+                            selectedPair: selectedPair
+
+                        },
+                        success: function (response) {
+                            console.log("sent data -done")
+                            document.getElementById("final_cash").textContent = response.final_cash;
+                            document.getElementById("total_return").textContent = response.total_return;
+                            document.getElementById("annualized_return").textContent = response.annualized_return;
+                            document.getElementById("volatility").textContent = response.volatility;
+                            document.getElementById("sharpe_ratio").textContent = response.sharpe_ratio;
+                            document.getElementById("max_drawdown").textContent = response.max_drawdown;
+                            document.getElementById("num_trades").textContent = response.num_trades;
+                            document.getElementById("win_rate").textContent = response.win_rate;
+                            updateImageStatistics(response.statisticimage)
+
+                            {#document.getElementById("data").innerHTML=response.dataa ;#}
+                        }
+                     });
                 });
                 $('#btn-exec').click(function () {
                     var sector = selectedSector;  // field with ID 'sector' to capture the sector value

@@ -1,0 +1,20 @@
+{% extends'base.html' %}
+{% block title %}
+    Historique page
+{% endblock %}
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/multisteps.css') }}">
+{% endblock %}
+{% block body %}
+    <section class="home-section">
+        <div class="text">Historique</div>
+        <div class="content">
+        </div>
+    </section>
+{% block scripts %}
+    {{ super() }}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="../static/js/function.js"></script>
+    {% endblock %}
+{% endblock %}
