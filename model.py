@@ -503,7 +503,7 @@ def calculate_performance(z_score_spread, stock1, stock2, sector, lower_threshol
 
 def plot_performance(data, total_return, annualized_return, volatility, sharpe_ratio, max_drawdown, num_trades,
                      win_rate, sector, stock1, stock2):
-    fig, axs = plt.subplots(5, 1, figsize=(14, 25))
+    fig, axs = plt.subplots(5, 1, figsize=(20, 27))
 
     # Plot 1: Cumulative Returns over Time
     axs[0].plot(data['cumulative_returns'], color='blue', label='Cumulative Returns')
