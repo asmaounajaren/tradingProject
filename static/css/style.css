@@ -302,6 +302,6 @@ body{
   width: calc(100% - 250px);
 }
 
-.image{
-  background: url("../pic.png");
-}
+/*.image{*/
+/*  background: url("../pic.png");*/
+/*}*/

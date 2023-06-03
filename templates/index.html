@@ -31,7 +31,6 @@
                                 <form class="multisteps-form__form">
                                     <div class="multisteps-form__panel shadow p-4 rounded bg-white js-active"
                                          data-animation="scaleIn">
-                                        <h3 class="multisteps-form__title">Your User Info</h3>
                                         <div class="multisteps-form__content">
                                             <div class="form-row mt-4">
                                                 <div class="col-12 col-sm-6 mt-4 mt-sm-0">
@@ -67,7 +66,7 @@
                                                         {% endfor %}
                                                     {% endif %}
                                                 </table>
-                                                <img id="plot-image" src="" alt="{{ sector }} Plot"
+                                                <img id="plot-image" src="" alt="En cours..."
                                                      style="height: 50%;width: 100%">
                                                 <br>
                                             </div>
@@ -129,26 +128,25 @@
                                                     </form>
                                                 </div>
                                             </div>
-                                             <div id="trade_history" class="form-row mt-4">
-                                            </div>
                                             <div id="plot_container" class="form-row mt-4">
-                                                <img id="zscore-image" src="" alt="zscore"
+                                                <img id="zscore-image" src="" alt="En cours"
                                                      style="height: 50%;width: 100%">
                                             </div>
 
+                                             <div id="trade_history" class="form-row mt-4" style="justify-content: center">
+                                            </div>
+
                                             <div class="button-row d-flex mt-4">
-                                                <button class="btn btn-primary js-btn-prev" type="button" title="Prev">
-                                                    Prev
-                                                </button>
                                                 <button id="next-click" class="btn btn-primary ml-auto js-btn-next" type="submit"
-                                                        title="Next">Next
+                                                        title="Next">OK
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="multisteps-form__panel shadow p-2 rounded bg-white"
                                          data-animation="scaleIn">
-                                        <h3 class="multisteps-form__title">Additional Message</h3>
+                                        <h3 class="multisteps-form__title">Statistics</h3>
+
                                         <ul class="box-info">
                                             <li>
                                                 <span class="text">
@@ -200,7 +198,7 @@
                                             </li>
                                         </ul>
                                         <div  class="form-row mt-4">
-                                                <img id="statistics-image" src="" alt="statistics-image"
+                                                <img id="statistics-image" src="" alt="En cours..."
                                                      style="height: 50%;width: 100%">
                                             </div>
 {#                                        <div class="form-row mt-4">#}
@@ -210,11 +208,7 @@
                                             <div id="data" class="form-row mt-4">
 
                                             </div>
-                                            <div class="button-row d-flex mt-4">
-                                                <button class="btn btn-primary js-btn-prev" type="button" title="Prev">
-                                                    Prev
-                                                </button>
-                                            </div>
+
                                         </div>
                                     </div>
                                 </form>

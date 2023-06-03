@@ -145,17 +145,17 @@ window.addEventListener('load', setFormHeight, false);
 window.addEventListener('resize', setFormHeight, false);
 
 
-const setAnimationType = newType => {
-  DOMstrings.stepFormPanels.forEach(elem => {
-    elem.dataset.animation = newType;
-  });
-};
+// const setAnimationType = newType => {
+//   DOMstrings.stepFormPanels.forEach(elem => {
+//     elem.dataset.animation = newType;
+//   });
+// };
 
 //changing animation
-const animationSelect = document.querySelector('.pick-animation__select');
-
-animationSelect.addEventListener('change', () => {
-  const newAnimationType = animationSelect.value;
-
-  setAnimationType(newAnimationType);
-});
+// const animationSelect = document.querySelector('.pick-animation__select');
+//
+// animationSelect.addEventListener('change', () => {
+//   const newAnimationType = animationSelect.value;
+//
+//   setAnimationType(newAnimationType);
+// });
