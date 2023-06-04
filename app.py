@@ -3,13 +3,18 @@ from register import reg
 import os
 import pickle
 from model import cluster_stocks,visualize_clusters,analyze_cluster_pairs,plot_and_simulate_trading,calculate_performance,z_score_spread,plot_performance
-
+from flask_mysqldb import MySQL
 app = Flask(__name__)
 app.secret_key = os.urandom(32)
 
+
 app.register_blueprint(reg)
 # model = pickle.load(open('model.pkl', 'rb'))
-
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'admin'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'pair_traiding'
+mysql=MySQL(app)
 sectors = [
     'Energy',
     'Communication_Services',
@@ -21,6 +26,7 @@ sectors = [
 
 ]
 
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -29,6 +35,7 @@ def index():
         print(selected_sector)
         clusters = cluster_stocks(selected_sector)
         plot_img = visualize_clusters(selected_sector)
+
         response = {
             'clusters': clusters,
             'plot_img': plot_img,

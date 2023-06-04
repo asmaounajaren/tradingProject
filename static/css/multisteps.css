@@ -7,7 +7,7 @@
 body {
   font-family: 'Poppins', sans-serif;
   font-size: 16px;
-  color: #2c2c2c;
+  color: #000000;
 }
 body a {
   color: inherit;
@@ -18,8 +18,8 @@ body a {
 	--lato: 'Lato', sans-serif;
 
 	--light: #F9F9F9;
-	--blue: #3C91E6;
-	--light-blue: #CFE8FF;
+	--blue: #34854B;
+	--light-blue: #e4f7ea;
 	--grey: #eee;
 	--dark-grey: #AAAAAA;
 	--dark: #342E37;
@@ -67,7 +67,7 @@ body a {
   transition-delay: 0s;
   position: relative;
   padding-top: 20px;
-  color: rgba(108, 117, 125, 0.7);
+  color: rgb(113, 173, 128);
   text-indent: -9999px;
   border: none;
   background-color: transparent;
@@ -117,7 +117,7 @@ body a {
   display: none;
 }
 .multisteps-form__progress-btn.js-active {
-  color: #004f83;
+  color: #2E703D;
 }
 .multisteps-form__progress-btn.js-active:before {
   -webkit-transform: translateX(-50%) scale(1.2);
@@ -194,10 +194,10 @@ body a {
           transform: scale(1);
 }
 .btn{
-  background-color: #004f83;
+  background-color: #2E703D;
 }
 .btn:hover{
-  background-color: #1c679a;
+  background-color: #34854B;
 }
 .box-info {
 	display: grid;
@@ -238,10 +238,33 @@ body a {
 .box-info li .text h3 {
 	font-size: 14px;
 	font-weight: 600;
-	color: var(--dark);
 }
 .box-info li .text p {
-	color: var(--dark);
+	color: black;
     font-size: 16px;
+    margin-left: -25px;
+    margin-top: -10px;
 
+}
+input[type="text"]:focus,input[type="number"]:focus{
+  border-color: #2E703D;
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+.form-control:focus {
+  border-color: #2E703D;
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+.form-control option:focus {
+    background-color: #71ad80 !important;
+
+}
+.form-control option:hover {
+    background-color: #71ad80 !important;
+
+}
+.btn .btn-info:active{
+    background-color: var(--color-second);
+    border-color: #2E703D;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
 }

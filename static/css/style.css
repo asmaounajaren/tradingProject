@@ -1,10 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
 :root{
-  --color-default:#004f83;
-  --color-second:#0067ac;
+  --color-default:#2E703D;
+  --color-second:#327E46;
   --color-white:#fff;
-  --color-body:#e4e9f7;
+  --color-body:#e4f7ea;
   --color-light:#e0e0e0;
 }
 
@@ -18,7 +18,7 @@
 
 body{
   min-height: 100vh;
-  background-color: #e4e9f7 !important;
+  background-color: #e4f7ea !important;
 }
 
 .sidebar{
